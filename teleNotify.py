@@ -103,7 +103,7 @@ if properties["chat_id"].strip() is None or "":
     exit()
 
 if properties["bot_Token"].strip() is None or "":
-    print("Please add an chat id via --botToken or the properties file.")
+    print("Please add an bot token via --botToken or the properties file.")
     exit()
 
 bot.send_message(chat_id=properties["chat_id"], text=toSend)
