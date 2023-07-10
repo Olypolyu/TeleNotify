@@ -1,0 +1,11 @@
+# To which conversation we should reply to
+chat_id=
+
+# DO NOT share your telegram token, please. maybe you should change access permissions for this file.
+bot_Token=
+
+# emoticons used with --sad argument
+sad_emoticons =":(", ":'(", ":-(", "T_T", ":-|", "D:", "D-:", ":-[", ":-<", ":-c"
+
+# emoticons used with --happy argument
+happy_emoticons =":)", ":D", ":-)", ":-D", ":]", ":P", "^_^", "OwO", ":-]", ">w<"
