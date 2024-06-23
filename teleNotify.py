@@ -3,32 +3,38 @@ import ast
 import datetime
 import random
 import telebot
+import sys
+import traceback
+from pathlib import Path
 
 # Read properties
 properties = {}
-with open("./teleNotify.properties", "r") as f:
-    for line in f:
+try:
+    with open(Path(sys.executable).resolve().with_name("teleNotify.properties"), "r") as f:
+        print("Found teleNofitfy.properties file, loading settings from it...")
+        for line in f:
 
-        # Ignore comments and empty lines
-        line = line.strip()
-        if line.startswith("#") or line == "":
-            continue
+            # Ignore comments and empty lines
+            line = line.strip()
+            if line.startswith("#") or line == "":
+                continue
 
-        # Split the line into key-value pairs
-        key_value = line.split("=", 1)
-        key = key_value[0].strip()
-        value = key_value[1].strip()
+            # Split the line into key-value pairs
+            key_value = line.split("=", 1)
+            key = key_value[0].strip()
+            value = key_value[1].strip()
 
-        # Convert string to boolean if necessary
-        if value.lower() == "false":
-            properties[key] = False
-            continue
-        elif value.lower() == "true":
-            properties[key] = True
-            continue
+            # Convert string to boolean if necessary
+            if value.lower() == "false":
+                properties[key] = False
+                continue
+            elif value.lower() == "true":
+                properties[key] = True
+                continue
 
-        # Add the key-value pair to the dictionary
-        properties[key] = value
+            # Add the key-value pair to the dictionary
+            properties[key] = value
+except: ()
 
 # Register arguments
 parser = argparse.ArgumentParser()
@@ -57,11 +63,24 @@ args = parser.parse_args()
 
 # Override things as needed
 if args.botToken is not None:
-    properties["botToken"] = args.botToken
+    properties["bot_Token"] = args.botToken
 
 if args.chatID is not None:
     properties["chat_id"] = args.chatID
-
+    
+# Error handling
+try: properties["bot_Token"]
+except:
+    print("ERROR: Token not defined.")
+    print("Try running this command with -h or --help.")
+    sys.exit()
+    
+try: properties["chat_id"]
+except:
+    print("ERROR: Chat id not defined.")
+    print("Try running this command with -h or --help.")
+    sys.exit()
+    
 # Initialize bot
 bot = telebot.TeleBot(properties["bot_Token"])
 toSend = ""
@@ -95,15 +114,14 @@ if args.happy:
 
 # Send a little message if the user does not include an argument.
 if toSend == "":
-    print("Must include an argument.")
-    exit()
+    print("ERROR: Must include an argument.")
+    print("Try running this command with -h or --help.")
+    sys.exit()
 
-if properties["chat_id"].strip() is None or "":
-    print("Please add an chat id via --chatID or the properties file.")
-    exit()
-
-if properties["bot_Token"].strip() is None or "":
-    print("Please add an bot token via --botToken or the properties file.")
-    exit()
-
-bot.send_message(chat_id=properties["chat_id"], text=toSend)
+try:
+    bot.send_message(chat_id=properties["chat_id"], text=toSend)
+except: 
+    traceback.print_exc()
+    sys.exit()
+    
+print(f"Message: \"{toSend}\" was sent.")
